@@ -1,0 +1,5 @@
+pandas 
+numpy
+matplotlib
+schedule
+lightstreamer-client-lib
