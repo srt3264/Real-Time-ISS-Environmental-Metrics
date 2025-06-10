@@ -6,4 +6,3 @@ lightstreamer-client-lib
 streamlit
 fastapi 
 uvicorn 
-"python-multipart[standard]"

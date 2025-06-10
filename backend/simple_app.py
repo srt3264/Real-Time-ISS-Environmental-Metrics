@@ -5,19 +5,21 @@ import datetime
 app = FastAPI()
 
 # Configure CORS
-allow_origins=[
-    "http://localhost:3000",
-    "https://curly-space-orbit-9rw97jj7j54cx7q-3000.app.github.dev" # <--- ENSURE THIS IS PRESENT AND EXACT
-],
+origins = [
+    "http://localhost:3000", # Old React local
+    "https://curly-space-orbit-9rw97jj7j54cx7q-3000.app.github.dev", # Old React Codespace
+    "http://localhost:8080", # New Vue local (or 5173 if using Vite)
+    "https://curly-space-orbit-9rw97jj7j54cx7q-8080.app.github.dev" # <--- ADD YOUR NEW VUE APP'S CODESPACE URL HERE (adjust port if needed)
+]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allow_origins, # Use the defined origins list
+    allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["POST", "GET", "PUT", "DELETE", "OPTIONS", "HEAD", "PATCH"],
-    allow_headers=["Authorization", "Content-Type", "Accept"],
-    expose_headers=["*"]
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
+
 
 @app.get("/")
 async def read_root():
