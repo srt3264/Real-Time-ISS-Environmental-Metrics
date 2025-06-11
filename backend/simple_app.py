@@ -1,6 +1,10 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 import datetime
+from backend.db_manager import get_historical_data
+from typing import Optional
+from datetime import datetime, timezone
+
 
 app = FastAPI()
 
@@ -23,7 +27,28 @@ app.add_middleware(
 
 @app.get("/")
 async def read_root():
-    return {"message": "Hello from Simple FastAPI!", "server_time": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+     return {"message": "Hello from Simple FastAPI!", "server_time": datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+
+
+
+@app.get("/api/data/{table_name}")
+async def api_get_data(
+    table_name: str,
+    start_time: Optional[str] = None,
+    end_time: Optional[str] = None,
+    limit: Optional[int] = None
+):
+    def parse(dt_str):
+        return datetime.fromisoformat(dt_str).astimezone(timezone.utc)
+
+    start_dt = parse(start_time) if start_time else None
+    end_dt = parse(end_time) if end_time else None
+
+    try:
+        df = get_historical_data(table_name, start_dt=start_dt, end_dt=end_dt, limit=limit)
+        return df.to_dict(orient="records")
+    except Exception as e:
+        return {"error": str(e)}
 
 @app.websocket("/ws/echo")
 async def websocket_endpoint(websocket: WebSocket):
