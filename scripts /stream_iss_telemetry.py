@@ -6,6 +6,16 @@ import os
 import time
 
 db_path = "data/iss_environment.db"
+with sqlite3.connect(db_path) as conn:
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS iss_telemetry (
+            timestamp REAL,
+            item TEXT,
+            value REAL,
+            status_class TEXT,
+            status_indicator TEXT
+        )
+    """)
 
 items = [
     "USLAB000032",  # Cabin Temperature
